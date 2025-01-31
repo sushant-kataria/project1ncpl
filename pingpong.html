@@ -6,10 +6,34 @@
     canvas {
       border: 1px solid black;
     }
+    .control {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+    }
+    .button {
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+      background-color: lightgray;
+      border: 1px solid black;
+      margin: 0 10px;
+      line-height: 60px;
+      font-size: 20px;
+      cursor: pointer;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
   <canvas id="pingPongCanvas" width="800" height="400"></canvas>
+  <div class="control">
+    <div class="button" id="leftUp">W</div>
+    <div class="button" id="leftDown">S</div>
+    <div class="button" id="rightUp">↑</div>
+    <div class="button" id="rightDown">↓</div>
+  </div>
   <script>
     const canvas = document.getElementById('pingPongCanvas');
     const ctx = canvas.getContext('2d');
@@ -41,22 +65,10 @@
     }
 
     function movePaddle() {
-      document.addEventListener('keydown', function(event) {
-        switch (event.key) {
-          case 'ArrowUp':
-            rightPaddleY -= rightPaddleSpeed;
-            break;
-          case 'ArrowDown':
-            rightPaddleY += rightPaddleSpeed;
-            break;
-          case 'w':
-            leftPaddleY -= leftPaddleSpeed;
-            break;
-          case 's':
-            leftPaddleY += leftPaddleSpeed;
-            break;
-        }
-      });
+      document.getElementById('leftUp').addEventListener('touchstart', () => leftPaddleY -= leftPaddleSpeed);
+      document.getElementById('leftDown').addEventListener('touchstart', () => leftPaddleY += leftPaddleSpeed);
+      document.getElementById('rightUp').addEventListener('touchstart', () => rightPaddleY -= rightPaddleSpeed);
+      document.getElementById('rightDown').addEventListener('touchstart', () => rightPaddleY += rightPaddleSpeed);
     }
 
     function updateBall() {
