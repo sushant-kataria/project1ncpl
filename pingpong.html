@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ping Pong Game</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="pingPongCanvas" width="800" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById('pingPongCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const paddleWidth = 10;
+    const paddleHeight = 75;
+    const ballRadius = 10;
+
+    let rightPaddleY = (canvas.height - paddleHeight) / 2;
+    let leftPaddleY = (canvas.height - paddleHeight) / 2;
+
+    const rightPaddleSpeed = 10;
+    const leftPaddleSpeed = 10;
+
+    let ballX = canvas.width / 2;
+    let ballY = canvas.height / 2;
+    let ballSpeedX = 5;
+    let ballSpeedY = 5;
+
+    function drawPaddle(x, y) {
+      ctx.fillRect(x, y, paddleWidth, paddleHeight);
+    }
+
+    function drawBall(x, y) {
+      ctx.beginPath();
+      ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function movePaddle() {
+      document.addEventListener('keydown', function(event) {
+        switch (event.key) {
+          case 'ArrowUp':
+            rightPaddleY -= rightPaddleSpeed;
+            break;
+          case 'ArrowDown':
+            rightPaddleY += rightPaddleSpeed;
+            break;
+          case 'w':
+            leftPaddleY -= leftPaddleSpeed;
+            break;
+          case 's':
+            leftPaddleY += leftPaddleSpeed;
+            break;
+        }
+      });
+    }
+
+    function updateBall() {
+      ballX += ballSpeedX;
+      ballY += ballSpeedY;
+
+      if (ballY + ballRadius > canvas.height || ballY - ballRadius < 0) {
+        ballSpeedY = -ballSpeedY;
+      }
+
+      if (ballX + ballRadius > canvas.width) {
+        if (ballY > rightPaddleY && ballY < rightPaddleY + paddleHeight) {
+          ballSpeedX = -ballSpeedX;
+        } else {
+          resetBall();
+        }
+      }
+
+      if (ballX - ballRadius < 0) {
+        if (ballY > leftPaddleY && ballY < leftPaddleY + paddleHeight) {
+          ballSpeedX = -ballSpeedX;
+        } else {
+          resetBall();
+        }
+      }
+    }
+
+    function resetBall() {
+      ballX = canvas.width / 2;
+      ballY = canvas.height / 2;
+      ballSpeedX = -ballSpeedX;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawPaddle(0, leftPaddleY);
+      drawPaddle(canvas.width - paddleWidth, rightPaddleY);
+      drawBall(ballX, ballY);
+
+      updateBall();
+      movePaddle();
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  </script>
+</body>
+</html>
