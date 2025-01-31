@@ -5,35 +5,13 @@
   <style>
     canvas {
       border: 1px solid black;
-    }
-    .control {
-      position: absolute;
-      top: 10px; /* Moved to the top */
-      width: 100%;
-      text-align: center;
-    }
-    .button {
-      display: inline-block;
-      width: 60px;
-      height: 60px;
-      background-color: lightgray;
-      border: 1px solid black;
-      margin: 0 10px;
-      line-height: 60px;
-      font-size: 20px;
-      cursor: pointer;
-      user-select: none;
+      display: block;
+      margin: 20px auto;
     }
   </style>
 </head>
 <body>
   <canvas id="pingPongCanvas" width="800" height="400"></canvas>
-  <div class="control">
-    <div class="button" id="leftUp">W</div>
-    <div class="button" id="leftDown">S</div>
-    <div class="button" id="rightUp">↑</div>
-    <div class="button" id="rightDown">↓</div>
-  </div>
   <script>
     const canvas = document.getElementById('pingPongCanvas');
     const ctx = canvas.getContext('2d');
@@ -45,8 +23,7 @@
     let rightPaddleY = (canvas.height - paddleHeight) / 2;
     let leftPaddleY = (canvas.height - paddleHeight) / 2;
 
-    const rightPaddleSpeed = 10;
-    const leftPaddleSpeed = 10;
+    const paddleSpeed = 10;
 
     let ballX = canvas.width / 2;
     let ballY = canvas.height / 2;
@@ -64,11 +41,16 @@
       ctx.closePath();
     }
 
-    function movePaddle() {
-      document.getElementById('leftUp').addEventListener('touchstart', () => leftPaddleY -= leftPaddleSpeed);
-      document.getElementById('leftDown').addEventListener('touchstart', () => leftPaddleY += leftPaddleSpeed);
-      document.getElementById('rightUp').addEventListener('touchstart', () => rightPaddleY -= rightPaddleSpeed);
-      document.getElementById('rightDown').addEventListener('touchstart', () => rightPaddleY += rightPaddleSpeed);
+    function movePaddle(event) {
+      const touchY = event.touches[0].clientY;
+      const canvasRect = canvas.getBoundingClientRect();
+      const relativeY = touchY - canvasRect.top;
+
+      if (event.touches[0].clientX < canvas.width / 2) {
+        leftPaddleY = relativeY - paddleHeight / 2;
+      } else {
+        rightPaddleY = relativeY - paddleHeight / 2;
+      }
     }
 
     function updateBall() {
@@ -109,10 +91,11 @@
       drawBall(ballX, ballY);
 
       updateBall();
-      movePaddle();
 
       requestAnimationFrame(draw);
     }
+
+    canvas.addEventListener('touchmove', movePaddle);
 
     draw();
   </script>
